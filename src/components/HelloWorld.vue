@@ -55,9 +55,7 @@ export default {
           if (typeof window.ethereum !== 'undefined'|| (typeof window.web3 !== 'undefined')) {
             // 检测到Web3浏览器用户。 现在可以使用提供程序了。
             const provider = window['ethereum'] || window.web3.currentProvider;
-            // 实例化web3
-            //挂载在全局变量，方便直接获取
-            this.web3= new Web3(provider);
+
 
             // 切换网络，网络不存在，添加网络
             const chainId = (56).toString(16);
@@ -102,10 +100,18 @@ export default {
               }
             }
 
-            window.ethereum.enable().then((res) => {
-                        this.currentAddress=res[0];
-                        console.log("当前钱包地址：" + res)
-            })
+            // window.ethereum.enable().then((res) => {
+            //             this.currentAddress=res[0];
+            //             console.log("当前钱包地址：" + res)
+            // })
+
+
+            this.connectWallet(provider);
+            // const accounts = await window.ethereum.request({
+            //   method: 'eth_requestAccounts',
+            // });
+           
+            // console.log('Connected account:', accounts[0]);
           }else {
             alert("请安装MetaMask钱包")
           }
@@ -115,9 +121,7 @@ export default {
           if (typeof window.ethereum !== 'undefined'|| (typeof window.web3 !== 'undefined')) {
             // 检测到Web3浏览器用户。 现在可以使用提供程序了。
             const provider = window['ethereum'] || window.web3.currentProvider;
-            // 实例化web3
-            //挂载在全局变量，方便直接获取
-            this.web3= new Web3(provider);
+
 
             // 切换网络，网络不存在，添加网络
             const chainId = (1).toString(16);
@@ -162,14 +166,32 @@ export default {
               }
             }
 
-            window.ethereum.enable().then((res) => {
-                        this.currentAddress=res[0];
-                        console.log("当前钱包地址：" + res)
-            })
+            // window.ethereum.enable().then((res) => {
+            //             this.currentAddress=res[0];
+            //             console.log("当前钱包地址：" + res)
+            // })
+            this.connectWallet(provider);
           }else {
             alert("请安装MetaMask钱包")
           }
      },
+     async  connectWallet(provider) {
+      if (typeof provider !== 'undefined') {
+        try {
+          const accounts = await provider.request({
+            method: 'eth_requestAccounts',
+          });
+          this.currentAddress=accounts[0];
+
+          //挂载在全局变量web3，方便直接获取
+          this.web3= new Web3(provider);
+          console.log('当前钱包地址：', accounts[0]);
+        } catch (error) {
+          console.error('Error:', error);
+        }
+      }
+     },
+
      //授权
      async approve(){
         // web3js API 连接合约，获取实例 参数 erc20 abi,和合约地址
