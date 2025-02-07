@@ -3,6 +3,7 @@
       <button v-on:click="connectBscMetamask">连接BSC</button>
       <button v-on:click="connectEthMetamask">连接ETH</button>
        <div>当前钱包地址：{{currentAddress}}</div> 
+       <div>当前钱包余额：{{userBalance}}</div> 
       <br/>
       <button v-on:click="approve">授权</button>
       <br/>
@@ -46,7 +47,8 @@ export default {
         // 授权数量
         AllowanceBalance:0,
         //web3 实例
-        web3:null
+        web3:null,
+        userBalance:0
       }
   },
   methods:{
@@ -186,6 +188,14 @@ export default {
           //挂载在全局变量web3，方便直接获取
           this.web3= new Web3(provider);
           console.log('当前钱包地址：', accounts[0]);
+
+          const balanceWei = await window.ethereum.request({
+            method: 'eth_getBalance',
+            params: [this.currentAddress, 'latest']
+          });
+          const balanceBigNumber = new BigNumber(balanceWei);
+          const balanceInEther = balanceBigNumber.dividedBy(new BigNumber(10).pow(18));
+          this.userBalance=balanceInEther;
         } catch (error) {
           console.error('Error:', error);
         }
