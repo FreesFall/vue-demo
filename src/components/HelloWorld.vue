@@ -2,6 +2,7 @@
   <div>
       <button v-on:click="connectBscMetamask">连接BSC</button>
       <button v-on:click="connectEthMetamask">连接ETH</button>
+      <button style="margin-left: 20px;" v-on:click="reset">断开连接</button>
        <div>当前钱包地址：{{currentAddress}}</div> 
        <div>当前钱包余额：{{userBalance}}</div> 
       <br/>
@@ -48,7 +49,7 @@ export default {
         AllowanceBalance:0,
         //web3 实例
         web3:null,
-        userBalance:0
+        userBalance:null
       }
   },
   methods:{
@@ -201,7 +202,11 @@ export default {
         }
       }
      },
-
+     reset(){
+      this.currentAddress="";
+      this.web3=null;
+      this.userBalance=null;
+     },
      //授权
      async approve(){
         // web3js API 连接合约，获取实例 参数 erc20 abi,和合约地址
